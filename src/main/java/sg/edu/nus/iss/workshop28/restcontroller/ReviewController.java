@@ -19,8 +19,14 @@ public class ReviewController {
     
     @GetMapping(path="/game/{game_id}/reviews", produces=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<String> getReviewByGameId(@PathVariable String game_id) {
+
+        String result = rService.getReviewByGameId(game_id);
         
-        return ResponseEntity.ok(rService.getReviewByGameId(game_id));
+        if (result == null) {
+            return ResponseEntity.status(400).body("Game ID provided does not exist");
+        }
+
+        return ResponseEntity.status(200).body(result);
     }
 
     /**

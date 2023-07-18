@@ -45,9 +45,13 @@ public class ReviewService {
     }
 
     public String getReviewByGameId(String game_id) {
-        Document result = rRepo.getReviewByGameId(game_id);
-        // pull out the values of each key and create a json
-
+        List<Document> resultList = rRepo.getReviewByGameId(game_id);
+        
+        if (resultList.get(0) == null) {
+            return null;
+        }
+        
+        Document result = resultList.get(0);
         int gid = result.getInteger("gid");
         String name = result.getString("name");
         int year = result.getInteger("year");

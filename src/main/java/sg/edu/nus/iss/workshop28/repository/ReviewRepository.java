@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.workshop28.repository;
 
+import java.util.List;
+
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -50,7 +52,7 @@ public class ReviewRepository {
         ]
         );
     */
-    public Document getReviewByGameId(String gameId) {
+    public List<Document> getReviewByGameId(String gameId) {
         int intGameId = Integer.parseInt(gameId);
         Criteria criteria = Criteria.where(F_GID).is(intGameId);
         MatchOperation mo = Aggregation.match(criteria);
@@ -58,8 +60,8 @@ public class ReviewRepository {
         ProjectionOperation po = Aggregation.project("gid", "name", "year", "ranking", "users_rated", "url", "image", "reviews._id");
         Aggregation pipeline = Aggregation.newAggregation(mo, lo, po);
         AggregationResults<Document> results = mTemplate.aggregate(pipeline, C_GAMES, Document.class);
-        
-        return results.getMappedResults().get(0);
+
+        return results.getMappedResults();
     }
 
     
