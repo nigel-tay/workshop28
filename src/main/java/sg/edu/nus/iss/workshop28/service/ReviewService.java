@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.workshop28.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bson.Document;
@@ -30,14 +31,15 @@ public class ReviewService {
      */
     public JsonObject buildJson(int gid, String name, int year, int ranking, int users_rated, String url, String image, List<String> reviews) {
         JsonObject json = Json.createObjectBuilder()
-                                .add("gid", gid)
+                                .add("game_id", gid)
                                 .add("name", name)
                                 .add("year", year)
-                                .add("ranking", ranking)
+                                .add("rank", ranking)
                                 .add("users_rated", users_rated)
                                 .add("url", url)
-                                .add("image", gid)
+                                .add("thumbnail", gid)
                                 .add("reviews", Json.createArrayBuilder(reviews))
+                                .add("timestamp", new Date().toString())
                                 .build();
         return json;
     }
