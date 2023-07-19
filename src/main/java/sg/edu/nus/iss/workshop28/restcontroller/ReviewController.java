@@ -40,7 +40,7 @@ public class ReviewController {
      */
     @GetMapping(path="/games/highest", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getReviewByHighestRating(@RequestParam String limit) {
-        String jsonString = rService.getReviewByHighestRating(limit);
+        String jsonString = rService.getReviewByRating(limit, "highest");
 
         if (jsonString == null) {
             return ResponseEntity.status(400).body("Bad request");
@@ -53,6 +53,15 @@ public class ReviewController {
     /**
      *  GET /games/lowest
         Accept: application/json
-     */
+    */
+    @GetMapping(path="/games/lowest", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getReviewByLowestRating(@RequestParam String limit) {
+        String jsonString = rService.getReviewByRating(limit, "lowest");
 
+        if (jsonString == null) {
+            return ResponseEntity.status(400).body("Bad request");
+        }
+
+        return ResponseEntity.status(200).body(jsonString);        
+    }
 }

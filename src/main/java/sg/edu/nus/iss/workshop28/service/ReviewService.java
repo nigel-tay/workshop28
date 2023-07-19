@@ -78,8 +78,8 @@ public class ReviewService {
         return reviewJson.toString();
     }
 
-    public String getReviewByHighestRating(String limit) {
-        List<Document> resultList = rRepo.getReviewByHighestRating(limit);
+    public String getReviewByRating(String limit, String ratingSort) {
+        List<Document> resultList = rRepo.getReviewByRating(limit, ratingSort);
 
         if (resultList.get(0) == null) {
             return null;

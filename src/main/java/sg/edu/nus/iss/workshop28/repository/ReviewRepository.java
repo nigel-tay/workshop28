@@ -108,12 +108,18 @@ public class ReviewRepository {
         );
      */
 
-    public List<Document> getReviewByHighestRating(String limit) {
+    public List<Document> getReviewByRating(String limit, String rating) {
         Long longLimit = Long.parseLong(limit);
         LimitOperation limitOp = Aggregation.limit(longLimit);
         LookupOperation lookupOp = Aggregation.lookup("comments", "gid", "gid", "review");
         UnwindOperation unwindOp = Aggregation.unwind("review");
-        SortOperation sortOp = Aggregation.sort(Direction.DESC, "review.rating");
+        SortOperation sortOp = null;
+        if (rating.equals("highest")) {
+            sortOp = Aggregation.sort(Direction.DESC, "review.rating");
+        }
+        else {
+            sortOp = Aggregation.sort(Direction.ASC, "review.rating");
+        }
         GroupOperation groupOp = Aggregation.group("gid")
                                                 .first("name").as("name")
                                                 .first("review.rating").as("rating")
@@ -125,6 +131,4 @@ public class ReviewRepository {
 
         return mTemplate.aggregate(pipeline, C_GAMES, Document.class).getMappedResults();
     }
-
-    
 }
