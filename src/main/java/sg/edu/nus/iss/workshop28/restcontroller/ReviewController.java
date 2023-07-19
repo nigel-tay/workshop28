@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import sg.edu.nus.iss.workshop28.service.ReviewService;
@@ -17,7 +18,11 @@ public class ReviewController {
     @Autowired
     ReviewService rService;
     
-    @GetMapping(path="/game/{game_id}/reviews", produces=MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    /**
+     *  GET /game/<game_id>/reviews
+        Accept: application/json
+     */
+    @GetMapping(path="/game/{game_id}/reviews", produces=MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getReviewByGameId(@PathVariable String game_id) {
 
         String result = rService.getReviewByGameId(game_id);
@@ -30,7 +35,24 @@ public class ReviewController {
     }
 
     /**
-     *  GET /game/<game_id>/reviews
+     *  GET /games/highest
         Accept: application/json
      */
+    @GetMapping(path="/games/highest", produces=MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> getReviewByHighestRating(@RequestParam String limit) {
+        String jsonString = rService.getReviewByHighestRating(limit);
+
+        if (jsonString == null) {
+            return ResponseEntity.status(400).body("Bad request");
+        }
+
+        return ResponseEntity.status(200).body(jsonString);        
+    }
+
+
+    /**
+     *  GET /games/lowest
+        Accept: application/json
+     */
+
 }

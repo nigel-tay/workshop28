@@ -44,6 +44,14 @@ public class ReviewService {
         return json;
     }
 
+    public JsonObject buildJsonForHighLow(String rating, List<JsonObject> reviewJsonObjects) {
+        return Json.createObjectBuilder()
+                        .add("rating", rating)
+                        .add("games", Json.createArrayBuilder(reviewJsonObjects))
+                        .add("timestamp", new Date().toString())
+                        .build();
+    }
+
     public String getReviewByGameId(String game_id) {
         List<Document> resultList = rRepo.getReviewByGameId(game_id);
         
@@ -68,6 +76,44 @@ public class ReviewService {
         JsonObject reviewJson = buildJson(gid, name, year, ranking, users_rated, url, image, reviews);
 
         return reviewJson.toString();
+    }
+
+    public String getReviewByHighestRating(String limit) {
+        List<Document> resultList = rRepo.getReviewByHighestRating(limit);
+
+        if (resultList.get(0) == null) {
+            return null;
+        }
+
+        int _id = 0;
+        String name = "";
+        int rating = 0;
+        String user = "";
+        String comment = "";
+        ObjectId review_id = null;
+
+        List<JsonObject> reviewList = new ArrayList<>();
+
+        for (Document result: resultList) {
+            _id = result.getInteger("_id");
+            name = result.getString("name");
+            rating = result.getInteger("rating");
+            user = result.getString("user");
+            comment = result.getString("comment");
+            review_id = result.getObjectId("review_id");
+
+            JsonObject json = Json.createObjectBuilder()
+                                    .add("_id", _id)
+                                    .add("name", name)
+                                    .add("rating", rating)
+                                    .add("user", user)
+                                    .add("comment", comment)
+                                    .add("review_id", review_id.toString())
+                                    .build();
+            reviewList.add(json);
+        }
+
+        return buildJsonForHighLow("Highest", reviewList).toString();
     }
 
 }
